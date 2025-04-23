@@ -12,8 +12,8 @@ services:
         deploy:
             resources:
                 limits:
-                    cpus: "1"
-                    memory: 1G
+                    cpus: "2"
+                    memory: 2G
 
     worker:
         image: bitnami/spark:3.5.0
@@ -28,8 +28,8 @@ services:
             replicas: 3
             resources:
                 limits:
-                    cpus: "1"
-                    memory: 1G
+                    cpus: "2"
+                    memory: 2G
 
     jupyter:
         image: jupyter/pyspark-notebook:latest
