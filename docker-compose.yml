@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+    master:
+        image: bitnami/spark:3.5.0
+        environment:
+            - SPARK_MODE=master
+            - SPARK_RPC_AUTHENTICATION_ENABLED=no
+        ports:
+            - "8080:8080" # Spark UI
+            - "7077:7077" # Master port
+            - "4040:4040" # Spark App UI
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 1G
+
+    worker:
+        image: bitnami/spark:3.5.0
+        environment:
+            - SPARK_MODE=worker
+            - SPARK_MASTER_URL=spark://master:7077
+            - SPARK_WORKER_CORES=1
+            - SPARK_WORKER_MEMORY=1g
+        depends_on:
+            - master
+        deploy:
+            replicas: 3
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 1G
+
+    jupyter:
+        image: jupyter/pyspark-notebook:latest
+        ports:
+            - "8888:8888"
+        volumes:
+            - ./notebooks:/home/jovyan/work
+        environment:
+            - JUPYTER_TOKEN=password123
+        depends_on:
+            - master
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 512M
